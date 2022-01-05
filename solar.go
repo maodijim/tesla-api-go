@@ -1,4 +1,4 @@
-package tesla_api_go
+package tesla
 
 type Solar struct {
 	EnergySiteId         int64  `json:"energy_site_id"`

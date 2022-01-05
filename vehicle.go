@@ -1,4 +1,4 @@
-package tesla_api_go
+package tesla
 
 import (
 	"net/http"
@@ -83,6 +83,9 @@ func (t TeslaApi) ListVehicleById(id string) (v Vehicle, err error) {
 		return v, err
 	}
 	vRes, err := parseVehicleRes(res)
+	if err != nil {
+		return v, err
+	}
 	v = vRes.Response.(Vehicle)
 	return v, err
 }

@@ -1,12 +1,39 @@
 # tesla-api-go
 
+[![Build Status](https://app.travis-ci.com/maodijim/tesla-api-go.svg?branch=main)](https://app.travis-ci.com/maodijim/tesla-api-go)
+
 This is an unofficial Go Tesla API client based on the documentation https://github.com/timdorr/tesla-api
 
 ## Installation
+```sh
+go get github.com/maodijim/tesla-api-go
+```
 
 ## Usage
-```sh
-go get 
+```go
+import "github.com/maodijim/tesla-api-go"
+// with credential
+teslaApi := tesla.NewTeslaApi(username, password, "", true)
+
+// with refresh token
+teslaApi := tesla.NewTeslaApi("", "", "eyJ...", true)
+
+teslaApi.Login()
+vehicles, err := teslaApi.ListVehicles()
+
+teslaApi.SetActiveVehicle(vehicles[0])
+
+teslaApi.WakeUp()
+teslaApi.DoorUnlock()
+teslaApi.DoorLock()
+teslaApi.ChargeDoorOpen()
+teslaApi.ChargeDoorClose()
+teslaApi.ChargeMaxRange()
+teslaApi.SetChargeLimit(50)
+teslaApi.SetClimateTemp(23.5, 23.5)
+teslaApi.SetSeatHeater(tesla.SeatFrontLeft, 3)
+teslaApi.ActuateTrunk(tesla.FrontTrunkType)
+
 ```
 
 

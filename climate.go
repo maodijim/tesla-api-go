@@ -1,4 +1,4 @@
-package tesla_api_go
+package tesla
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package tesla_api_go
+package tesla
 
 import (
 	"errors"
@@ -201,6 +201,9 @@ func (t TeslaApi) SetScheduledCharge(enable bool, time int) (o *CommandsRes, err
 	)
 }
 
+// SetScheduledDeparture
+// departureTime in min
+// end_off_peak_time in min
 func (t TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakTime int, preconditioningEnabled,
 	preconditioningWeekdaysOnly, offPeakChargingEnabled, offPeakChargingWeekdaysOnly bool) (o *CommandsRes, err error) {
 	if departureTime < 0 || departureTime > 1440 {

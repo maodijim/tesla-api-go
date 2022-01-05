@@ -1,4 +1,4 @@
-package tesla_api_go
+package tesla
 
 import (
 	"errors"
@@ -37,6 +37,9 @@ func (t *TeslaApi) WakeUp() (v *Vehicle, err error) {
 		return v, err
 	}
 	vRes, err := parseVehicleRes(res)
+	if err != nil {
+		return v, err
+	}
 	ve := vRes.Response.(Vehicle)
 	v = &ve
 	if res.StatusCode != 200 {
@@ -99,7 +102,7 @@ const (
 type TrunkType string
 
 func (t TrunkType) String() string {
-	return t.String()
+	return string(t)
 }
 
 func (t TeslaApi) ActuateTrunk(trunk TrunkType) (cmdRes *CommandsRes, err error) {
@@ -117,7 +120,7 @@ const (
 type WindowCmd string
 
 func (w WindowCmd) String() string {
-	return w.String()
+	return string(w)
 }
 
 func (t TeslaApi) WindowControl(winCmd WindowCmd, lat, lon float64) (cmdRes *CommandsRes, err error) {
