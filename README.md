@@ -1,6 +1,5 @@
 # tesla-api-go
-
-[![Build Status](https://app.travis-ci.com/maodijim/tesla-api-go.svg?branch=main)](https://app.travis-ci.com/maodijim/tesla-api-go)
+![Test](https://github.com/maodijim/tesla-api-go/actions/workflows/go.yml/badge.svg)
 
 This is an unofficial Go Tesla API client based on the documentation https://github.com/timdorr/tesla-api
 
