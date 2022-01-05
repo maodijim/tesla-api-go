@@ -16,13 +16,13 @@ func TestTeslaApi_Climate(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			tt.ta.ClimateAutoAcStart()
-			tt.ta.ClimateAutoAcStop()
-			tt.ta.ClimateState()
-			tt.ta.SetClimatePreConditionMax(true)
-			tt.ta.SetClimateTemp(23.5, 23.5)
-			tt.ta.SetSeatHeater(SeatFrontLeft, 3)
-			tt.ta.SetSteeringHeater(true)
+			_, _ = tt.ta.ClimateAutoAcStart()
+			_, _ = tt.ta.ClimateAutoAcStop()
+			_, _ = tt.ta.ClimateState()
+			_, _ = tt.ta.SetClimatePreConditionMax(true)
+			_, _ = tt.ta.SetClimateTemp(23.5, 23.5)
+			_, _ = tt.ta.SetSeatHeater(SeatFrontLeft, 3)
+			_, _ = tt.ta.SetSteeringHeater(true)
 		})
 	}
 }

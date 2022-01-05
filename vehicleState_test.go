@@ -16,11 +16,11 @@ func TestTeslaApi_VehicleState(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			tt.ta.GuiSetting()
-			tt.ta.MobileEnable()
-			tt.ta.VehicleConfig()
-			tt.ta.VehicleData()
-			tt.ta.VehicleState()
+			_, _ = tt.ta.GuiSetting()
+			_, _ = tt.ta.MobileEnable()
+			_, _ = tt.ta.VehicleConfig()
+			_, _ = tt.ta.VehicleData()
+			_, _ = tt.ta.VehicleState()
 		})
 	}
 }

@@ -77,7 +77,7 @@ func (t TeslaApi) TriggerHomeLink() (cmdRes *CommandsRes, err error) {
 		}))
 }
 
-func (t TeslaApi) SetSentryMod(on bool) (cmdRes *CommandsRes, err error) {
+func (t TeslaApi) SetSentryMode(on bool) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(cmdSentryMode, t.formUrlEncode(
 		map[string]string{
 			"on": strconv.FormatBool(on),

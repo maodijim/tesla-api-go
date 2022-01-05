@@ -39,15 +39,15 @@ func TestTeslaApi_Vehicles(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			tt.ta.ListVehicleById(strconv.FormatInt(fakeVehId, 10))
-			tt.ta.VehicleData()
-			tt.ta.ChargeState()
-			tt.ta.GetSuperChargingHistory()
-			tt.ta.GetChargeHistory()
-			tt.ta.SetClimateTemp(18.2, 18.2)
-			tt.ta.NearByChargingSites()
-			tt.ta.VehicleConfig()
-			tt.ta.ChargeStandard()
+			_, _ = tt.ta.ListVehicleById(strconv.FormatInt(fakeVehId, 10))
+			_, _ = tt.ta.VehicleData()
+			_, _ = tt.ta.ChargeState()
+			_, _ = tt.ta.GetSuperChargingHistory()
+			_, _ = tt.ta.GetChargeHistory()
+			_, _ = tt.ta.SetClimateTemp(18.2, 18.2)
+			_, _ = tt.ta.NearByChargingSites()
+			_, _ = tt.ta.VehicleConfig()
+			_, _ = tt.ta.ChargeStandard()
 		})
 	}
 }

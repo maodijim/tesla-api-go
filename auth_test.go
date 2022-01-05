@@ -60,8 +60,8 @@ func TestTeslaApi_getAuthCode(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			authCode := tt.ta.getAuthCode()
-			tt.ta.getToken(authCode)
-			tt.ta.renewToken()
+			_ = tt.ta.getToken(authCode)
+			_ = tt.ta.renewToken()
 			tt.ta.getVerifier("")
 			tt.ta.getChallenge()
 			tt.ta.RefreshToken()
