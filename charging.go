@@ -226,7 +226,8 @@ func (t TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakTi
 	)
 }
 
-func (t TeslaApi) IsCharging() bool {
+func (t *TeslaApi) IsCharging() bool {
+	_, _ = t.ChargeState()
 	return strings.ToLower(t.activeVehicleData.ChargeState.GetState()) == "charging"
 }
 
