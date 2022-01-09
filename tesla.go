@@ -24,7 +24,7 @@ type TeslaApi struct {
 }
 
 // Login Log in with username & password will require browser pop up, for No GUI environment use refresh token
-func (t TeslaApi) Login() (err error) {
+func (t *TeslaApi) Login() (err error) {
 	if t.AuthReq.identity != "" && t.AuthReq.credential != "" {
 		err = t.getToken(t.getAuthCode())
 	} else if t.refreshToken != "" {
