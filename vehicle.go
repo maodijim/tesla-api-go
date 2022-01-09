@@ -90,6 +90,30 @@ func (t TeslaApi) ListVehicleById(id string) (v Vehicle, err error) {
 	return v, err
 }
 
+func (t TeslaApi) GetVehicleName() string {
+	return t.activeVehicle.DisplayName
+}
+
+func (t TeslaApi) GetVehicleId() int {
+	return t.activeVehicle.VehicleId
+}
+
+func (t TeslaApi) GetId() int64 {
+	return t.activeVehicle.Id
+}
+
+func (t TeslaApi) GetVin() string {
+	return t.activeVehicle.Vin
+}
+
+func (t TeslaApi) GetVehicleOptions() string {
+	return t.activeVehicleData.OptionCodes
+}
+
+func (t TeslaApi) GetActiveVehicle() Vehicle {
+	return t.activeVehicle
+}
+
 func parseVehicleRes(res *http.Response) (vRes *VehicleRes, err error) {
 	vRes = &VehicleRes{}
 	err = parseResp(res, vRes)
