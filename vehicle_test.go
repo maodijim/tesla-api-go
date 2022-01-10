@@ -48,6 +48,8 @@ func TestTeslaApi_Vehicles(t1 *testing.T) {
 			_, _ = tt.ta.NearByChargingSites()
 			_, _ = tt.ta.VehicleConfig()
 			_, _ = tt.ta.ChargeStandard()
+			_, _ = tt.ta.HasSoftwareUpdate()
+			_, _ = tt.ta.IsSoftwareInstalling()
 		})
 	}
 }

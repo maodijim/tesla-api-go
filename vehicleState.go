@@ -15,6 +15,18 @@ type GuiSettings struct {
 	Timestamp           int64  `json:"timestamp"`
 }
 
+// SoftwareUpdate
+// Status: scheduled, available, installing, downloading
+type SoftwareUpdate struct {
+	DownloadPerc           int    `json:"download_perc"`
+	ExpectedDurationSec    int    `json:"expected_duration_sec"`
+	InstallPerc            int    `json:"install_perc"`
+	Status                 string `json:"status"`
+	Version                string `json:"version"`
+	WarningTimeRemainingMs int    `json:"warning_time_remaining_ms"`
+	ScheduledTimeMs        int64  `json:"scheduled_time_ms"`
+}
+
 type VehicleState struct {
 	ApiVersion          int    `json:"api_version"`
 	AutoparkStateV2     string `json:"autopark_state_v2"`
@@ -35,28 +47,22 @@ type VehicleState struct {
 	MediaState          struct {
 		RemoteControlEnabled bool `json:"remote_control_enabled"`
 	} `json:"media_state"`
-	NotificationsSupported  bool    `json:"notifications_supported"`
-	Odometer                float64 `json:"odometer"`
-	ParsedCalendarSupported bool    `json:"parsed_calendar_supported"`
-	Pf                      int     `json:"pf"`
-	Pr                      int     `json:"pr"`
-	RdWindow                int     `json:"rd_window"`
-	RemoteStart             bool    `json:"remote_start"`
-	RemoteStartEnabled      bool    `json:"remote_start_enabled"`
-	RemoteStartSupported    bool    `json:"remote_start_supported"`
-	RpWindow                int     `json:"rp_window"`
-	Rt                      int     `json:"rt"`
-	SentryMode              bool    `json:"sentry_mode"`
-	SentryModeAvailable     bool    `json:"sentry_mode_available"`
-	SmartSummonAvailable    bool    `json:"smart_summon_available"`
-	SoftwareUpdate          struct {
-		DownloadPerc        int    `json:"download_perc"`
-		ExpectedDurationSec int    `json:"expected_duration_sec"`
-		InstallPerc         int    `json:"install_perc"`
-		Status              string `json:"status"`
-		Version             string `json:"version"`
-	} `json:"software_update"`
-	SpeedLimitMode struct {
+	NotificationsSupported  bool           `json:"notifications_supported"`
+	Odometer                float64        `json:"odometer"`
+	ParsedCalendarSupported bool           `json:"parsed_calendar_supported"`
+	Pf                      int            `json:"pf"`
+	Pr                      int            `json:"pr"`
+	RdWindow                int            `json:"rd_window"`
+	RemoteStart             bool           `json:"remote_start"`
+	RemoteStartEnabled      bool           `json:"remote_start_enabled"`
+	RemoteStartSupported    bool           `json:"remote_start_supported"`
+	RpWindow                int            `json:"rp_window"`
+	Rt                      int            `json:"rt"`
+	SentryMode              bool           `json:"sentry_mode"`
+	SentryModeAvailable     bool           `json:"sentry_mode_available"`
+	SmartSummonAvailable    bool           `json:"smart_summon_available"`
+	SoftwareUpdate          SoftwareUpdate `json:"software_update"`
+	SpeedLimitMode          struct {
 		Active          bool    `json:"active"`
 		CurrentLimitMph float64 `json:"current_limit_mph"`
 		MaxLimitMph     float64 `json:"max_limit_mph"`
@@ -193,6 +199,12 @@ func (t *TeslaApi) VehicleConfig() (vc *VehicleConfig, err error) {
 	vc = &r.Response
 	t.activeVehicleData.VehicleConfig = *vc
 	return vc, err
+}
+
+func (t *TeslaApi) SoftwareUpdate() (su SoftwareUpdate, err error) {
+	_, _ = t.VehicleState()
+	su = t.activeVehicleData.VehicleState.SoftwareUpdate
+	return su, err
 }
 
 func (t TeslaApi) MobileEnable() (isEnabled bool, err error) {

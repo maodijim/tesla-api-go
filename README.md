@@ -114,8 +114,8 @@ teslaApi.ActuateTrunk(tesla.FrontTrunkType)
   - Sharing
     - [ ] /api/1/vehicles/{id}/command/share
   - Software Updates
-    - [ ] /api/1/vehicles/{id}/command/schedule_software_update
-    - [ ] /api/1/vehicles/{id}/command/cancel_software_update
+    - [x] /api/1/vehicles/{id}/command/schedule_software_update
+    - [x] /api/1/vehicles/{id}/command/cancel_software_update
 - [ ] Streaming
 - [ ] Autopark/Summon
 - [ ] Solar

@@ -114,6 +114,28 @@ func (t TeslaApi) GetActiveVehicle() Vehicle {
 	return t.activeVehicle
 }
 
+func (t *TeslaApi) HasSoftwareUpdate() (version string, result bool) {
+	su, err := t.SoftwareUpdate()
+	if err != nil {
+		return "", false
+	}
+	if su.Status == "available" {
+		return su.Version, true
+	}
+	return "", result
+}
+
+func (t *TeslaApi) IsSoftwareInstalling() (su SoftwareUpdate, yes bool) {
+	su, err := t.SoftwareUpdate()
+	if err != nil {
+		return su, false
+	}
+	if su.Status == "installing" {
+		return su, true
+	}
+	return su, false
+}
+
 func parseVehicleRes(res *http.Response) (vRes *VehicleRes, err error) {
 	vRes = &VehicleRes{}
 	err = parseResp(res, vRes)

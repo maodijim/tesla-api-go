@@ -1,6 +1,9 @@
 package main
 
-import "github.com/maodijim/tesla-api-go"
+import (
+	"fmt"
+	"github.com/maodijim/tesla-api-go"
+)
 
 func main() {
 	// login with refresh token
@@ -13,6 +16,10 @@ func main() {
 	_, _ = teslaApi.VehicleData()
 	_ = teslaApi.IsCharging()
 	_ = teslaApi.IsFastCharging()
+	version, hasUpdate := teslaApi.HasSoftwareUpdate()
+	if hasUpdate {
+		fmt.Printf("has software update %s\n", version)
+	}
 	teslaApi.WakeUp()
 	teslaApi.DoorUnlock()
 	teslaApi.DoorLock()

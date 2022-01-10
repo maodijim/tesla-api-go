@@ -21,6 +21,7 @@ func TestTeslaApi_VehicleState(t1 *testing.T) {
 			_, _ = tt.ta.VehicleConfig()
 			_, _ = tt.ta.VehicleData()
 			_, _ = tt.ta.VehicleState()
+			_, _ = tt.ta.SoftwareUpdate()
 		})
 	}
 }

@@ -33,6 +33,8 @@ func TestTeslaApi_Command(t1 *testing.T) {
 			_, _ = tt.ta.TriggerHomeLink()
 			_, _ = tt.ta.WakeUp()
 			_, _ = tt.ta.WindowControl(WinCloseCmd, 100.00, 100.00)
+			_, _ = tt.ta.ScheduleSoftwareUpdate(100)
+			_, _ = tt.ta.CancelSoftwareUpdate()
 		})
 	}
 }
