@@ -48,6 +48,10 @@ type ClimateState struct {
 
 func (t *TeslaApi) ClimateState() (cs *ClimateState, err error) {
 	cs = &ClimateState{}
+	lastUpdate := timestampSince(t.activeVehicleData.ClimateState.Timestamp)
+	if lastUpdate < ClimateStateReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.ClimateState, nil
+	}
 	r := struct {
 		BaseRes
 		Response ClimateState `json:"response"`

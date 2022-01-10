@@ -64,11 +64,17 @@ func (t TeslaApi) FlashLights() (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(cmdFlash, "")
 }
 
+var ErrNoHomeLinkNearBy = errors.New("no homelink nearby")
+
 // TriggerHomeLink Trigger homelink with current vehicle
 func (t TeslaApi) TriggerHomeLink() (cmdRes *CommandsRes, err error) {
 	ds, err := t.DriveState()
 	if err != nil {
 		return cmdRes, err
+	}
+	vs, err := t.VehicleState()
+	if !vs.HomelinkNearby {
+		return cmdRes, ErrNoHomeLinkNearBy
 	}
 	return t.sendCommand(cmdHomeLink, t.formUrlEncode(
 		map[string]string{

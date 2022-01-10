@@ -34,7 +34,14 @@ var (
 	ErrWakeTimeout     = errors.New("wake up vehicle timed out")
 	WakeTimeoutSec     = 30
 	// AutoWakeUp Automatically wake up vehicle if vehicle in sleep
-	AutoWakeUp = true
+	AutoWakeUp               = true
+	defaultReqInterval       = time.Second * 5
+	ChargeStateReqInterval   = defaultReqInterval
+	DriveStateReqInterval    = defaultReqInterval
+	ClimateStateReqInterval  = defaultReqInterval
+	VehicleStateReqInterval  = defaultReqInterval
+	VehicleConfigReqInterval = defaultReqInterval
+	GuiSettingReqInterval    = defaultReqInterval
 )
 
 type BaseRes struct {
@@ -312,4 +319,8 @@ func convertMapResp(in map[string]interface{}, outType interface{}, structKeyMap
 			}
 		}
 	}
+}
+
+func timestampSince(timestamp int64) time.Duration {
+	return time.Since(time.UnixMilli(timestamp))
 }

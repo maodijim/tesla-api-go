@@ -36,6 +36,10 @@ type DriveState struct {
 
 func (t *TeslaApi) DriveState() (ds *DriveState, err error) {
 	ds = &DriveState{}
+	lastUpdate := timestampSince(t.activeVehicleData.DriveState.Timestamp)
+	if lastUpdate < DriveStateReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.DriveState, nil
+	}
 	r := struct {
 		BaseRes
 		Response DriveState `json:"response"`

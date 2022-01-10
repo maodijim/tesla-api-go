@@ -140,6 +140,10 @@ func (t *TeslaApi) VehicleData() (vd *VehicleData, err error) {
 
 func (t *TeslaApi) GuiSetting() (gs *GuiSettings, err error) {
 	gs = &GuiSettings{}
+	lastUpdate := timestampSince(t.activeVehicleData.GuiSettings.Timestamp)
+	if lastUpdate < GuiSettingReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.GuiSettings, nil
+	}
 	r := struct {
 		BaseRes
 		Response GuiSettings `json:"response"`
@@ -155,6 +159,10 @@ func (t *TeslaApi) GuiSetting() (gs *GuiSettings, err error) {
 
 func (t *TeslaApi) VehicleState() (vs *VehicleState, err error) {
 	vs = &VehicleState{}
+	lastUpdate := timestampSince(t.activeVehicleData.VehicleState.Timestamp)
+	if lastUpdate < VehicleStateReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.VehicleState, nil
+	}
 	r := struct {
 		BaseRes
 		Response VehicleState `json:"response"`
@@ -170,6 +178,10 @@ func (t *TeslaApi) VehicleState() (vs *VehicleState, err error) {
 
 func (t *TeslaApi) VehicleConfig() (vc *VehicleConfig, err error) {
 	vc = &VehicleConfig{}
+	lastUpdate := timestampSince(t.activeVehicleData.VehicleConfig.Timestamp)
+	if lastUpdate < VehicleConfigReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.VehicleConfig, nil
+	}
 	r := struct {
 		BaseRes
 		Response VehicleConfig `json:"response"`

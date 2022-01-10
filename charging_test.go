@@ -29,6 +29,7 @@ func TestTeslaApi_Charging(t1 *testing.T) {
 			_, _ = tt.ta.SetScheduledDeparture(true, 100, 100, true, true, true, true)
 			_, _ = tt.ta.SetScheduledCharge(true, 120)
 			tt.ta.IsCharging()
+			tt.ta.IsFastCharging()
 		})
 	}
 }

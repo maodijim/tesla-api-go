@@ -25,3 +25,31 @@ func Test_isTokenExpired(t *testing.T) {
 		})
 	}
 }
+
+func Test_joinPath(t *testing.T) {
+	type args struct {
+		baseUrl string
+		paths   []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Test join path",
+			args: args{
+				baseUrl: "https://www.tesla.com",
+				paths:   []string{"/api/v1", "vehicleData"},
+			},
+			want: "https://www.tesla.com/api/v1/vehicleData",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := joinPath(tt.args.baseUrl, tt.args.paths...); got != tt.want {
+				t.Errorf("joinPath() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

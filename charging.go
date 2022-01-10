@@ -106,6 +106,10 @@ type ChargeSite struct {
 // ChargeState get vehicle charge state
 func (t *TeslaApi) ChargeState() (cd *ChargeState, err error) {
 	cd = &ChargeState{}
+	lastUpdate := timestampSince(t.activeVehicleData.ChargeState.Timestamp)
+	if lastUpdate < ChargeStateReqInterval && lastUpdate > 0 {
+		return &t.activeVehicleData.ChargeState, nil
+	}
 	r := struct {
 		BaseRes
 		Response ChargeState `json:"response"`
@@ -229,6 +233,11 @@ func (t TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakTi
 func (t *TeslaApi) IsCharging() bool {
 	_, _ = t.ChargeState()
 	return strings.ToLower(t.activeVehicleData.ChargeState.GetState()) == "charging"
+}
+
+func (t *TeslaApi) IsFastCharging() bool {
+	_, _ = t.ChargeState()
+	return t.activeVehicleData.ChargeState.FastChargerPresent
 }
 
 type SuperChargingHistory struct {

@@ -11,6 +11,8 @@ func main() {
 	vehicles, _ := teslaApi.ListVehicles()
 	_ = teslaApi.SetActiveVehicle(vehicles[0])
 	_, _ = teslaApi.VehicleData()
+	_ = teslaApi.IsCharging()
+	_ = teslaApi.IsFastCharging()
 	teslaApi.WakeUp()
 	teslaApi.DoorUnlock()
 	teslaApi.DoorLock()
