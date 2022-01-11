@@ -207,7 +207,7 @@ func (t *TeslaApi) SoftwareUpdate() (su SoftwareUpdate, err error) {
 	return su, err
 }
 
-func (t TeslaApi) MobileEnable() (isEnabled bool, err error) {
+func (t *TeslaApi) MobileEnable() (isEnabled bool, err error) {
 	r := struct {
 		BaseRes
 		Response bool `json:"response"`

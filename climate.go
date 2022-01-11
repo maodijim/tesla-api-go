@@ -65,16 +65,16 @@ func (t *TeslaApi) ClimateState() (cs *ClimateState, err error) {
 	return cs, err
 }
 
-func (t TeslaApi) ClimateAutoAcStart() (o *CommandsRes, err error) {
+func (t *TeslaApi) ClimateAutoAcStart() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdClimateAutoAcStart, "")
 }
 
-func (t TeslaApi) ClimateAutoAcStop() (o *CommandsRes, err error) {
+func (t *TeslaApi) ClimateAutoAcStop() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdClimateAutoAcStop, "")
 }
 
 // SetClimateTemp temperature in celcius
-func (t TeslaApi) SetClimateTemp(driverTemp, passengerTemp float64) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetClimateTemp(driverTemp, passengerTemp float64) (o *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateSetTemp,
 		t.formUrlEncode(
@@ -86,7 +86,7 @@ func (t TeslaApi) SetClimateTemp(driverTemp, passengerTemp float64) (o *Commands
 	)
 }
 
-func (t TeslaApi) SetClimatePreConditionMax(on bool) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetClimatePreConditionMax(on bool) (o *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateMax,
 		t.formUrlEncode(
@@ -114,7 +114,7 @@ type SeatType int
 // 2 Rear left
 // 4 Rear center
 // 5 Rear right
-func (t TeslaApi) SetSeatHeater(heater SeatType, level int) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetSeatHeater(heater SeatType, level int) (o *CommandsRes, err error) {
 	if heater < 0 || heater > 5 || heater == 3 {
 		return o, ErrInvalidSeatHeater
 	}
@@ -132,7 +132,7 @@ func (t TeslaApi) SetSeatHeater(heater SeatType, level int) (o *CommandsRes, err
 	)
 }
 
-func (t TeslaApi) SetSteeringHeater(on bool) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) SetSteeringHeater(on bool) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateSteeringHeat,
 		t.formUrlEncode(

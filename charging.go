@@ -124,7 +124,7 @@ func (t *TeslaApi) ChargeState() (cd *ChargeState, err error) {
 }
 
 // NearByChargingSites return list of superchargers and destination chargers
-func (t TeslaApi) NearByChargingSites() (cs []ChargeSite, err error) {
+func (t *TeslaApi) NearByChargingSites() (cs []ChargeSite, err error) {
 	if t.activeVehicle.Id == 0 {
 		return cs, ErrNoActiveVehicle
 	}
@@ -143,31 +143,31 @@ func (t TeslaApi) NearByChargingSites() (cs []ChargeSite, err error) {
 	return cs, err
 }
 
-func (t TeslaApi) ChargeDoorOpen() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeDoorOpen() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeDoorOpen, "")
 }
 
-func (t TeslaApi) ChargeDoorClose() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeDoorClose() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeDoorClose, "")
 }
 
-func (t TeslaApi) ChargeStart() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeStart() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeStart, "")
 }
 
-func (t TeslaApi) ChargeStop() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeStop() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeStop, "")
 }
 
-func (t TeslaApi) ChargeStandard() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeStandard() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeStandard, "")
 }
 
-func (t TeslaApi) ChargeMaxRange() (o *CommandsRes, err error) {
+func (t *TeslaApi) ChargeMaxRange() (o *CommandsRes, err error) {
 	return t.sendCommand(cmdChargeMax, "")
 }
 
-func (t TeslaApi) SetChargeLimit(percent int) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetChargeLimit(percent int) (o *CommandsRes, err error) {
 	if percent > 100 || percent < 0 {
 		return o, ErrInvalidChargePercent
 	}
@@ -179,7 +179,7 @@ func (t TeslaApi) SetChargeLimit(percent int) (o *CommandsRes, err error) {
 	)
 }
 
-func (t TeslaApi) SetChargeAmps(amps int) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetChargeAmps(amps int) (o *CommandsRes, err error) {
 	if amps < 1 || amps > 1000 ||
 		(t.activeVehicleData.ChargeState.GetMaxAmps() != 0 && amps > t.activeVehicleData.ChargeState.GetMaxAmps()) {
 		return o, ErrInvalidAmps
@@ -192,7 +192,7 @@ func (t TeslaApi) SetChargeAmps(amps int) (o *CommandsRes, err error) {
 	)
 }
 
-func (t TeslaApi) SetScheduledCharge(enable bool, time int) (o *CommandsRes, err error) {
+func (t *TeslaApi) SetScheduledCharge(enable bool, time int) (o *CommandsRes, err error) {
 	if time < 0 || time > 1440 {
 		return o, ErrInvalidChargeTime
 	}
@@ -208,7 +208,7 @@ func (t TeslaApi) SetScheduledCharge(enable bool, time int) (o *CommandsRes, err
 // SetScheduledDeparture
 // departureTime in min
 // end_off_peak_time in min
-func (t TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakTime int, preconditioningEnabled,
+func (t *TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakTime int, preconditioningEnabled,
 	preconditioningWeekdaysOnly, offPeakChargingEnabled, offPeakChargingWeekdaysOnly bool) (o *CommandsRes, err error) {
 	if departureTime < 0 || departureTime > 1440 {
 		return o, ErrInvalidChargeTime
@@ -290,7 +290,7 @@ type SuperChargingHistory struct {
 	VehicleMakeType string      `json:"vehicleMakeType"`
 }
 
-func (t TeslaApi) GetSuperChargingHistory() (ch []SuperChargingHistory, err error) {
+func (t *TeslaApi) GetSuperChargingHistory() (ch []SuperChargingHistory, err error) {
 	res, err := t.teslaAcctApi(http.MethodGet, "charging/api/history", t.formUrlEncode(map[string]string{
 		"vin": t.activeVehicleData.Vin,
 	}))
@@ -375,7 +375,7 @@ type ChargingHistoryGraph struct {
 	YRangeMax           int       `json:"y_range_max"`
 }
 
-func (t TeslaApi) GetChargeHistory() (ch *ChargeHistory, err error) {
+func (t *TeslaApi) GetChargeHistory() (ch *ChargeHistory, err error) {
 	if t.activeVehicle.Id == 0 {
 		return ch, ErrNoActiveVehicle
 	}

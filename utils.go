@@ -153,7 +153,7 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 	return res, err
 }
 
-func (t TeslaApi) sendDataRequest(reqDataType string, reqResp interface{}) (err error) {
+func (t *TeslaApi) sendDataRequest(reqDataType string, reqResp interface{}) (err error) {
 	if t.activeVehicle.Id == 0 {
 		return ErrNoActiveVehicle
 	}
@@ -169,7 +169,7 @@ func (t TeslaApi) sendDataRequest(reqDataType string, reqResp interface{}) (err 
 	return err
 }
 
-func (t TeslaApi) sendCommand(command, body string) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) sendCommand(command, body string) (cmdRes *CommandsRes, err error) {
 	cmdRes = &CommandsRes{}
 	if t.activeVehicle.Id == 0 {
 		return cmdRes, ErrNoActiveVehicle
@@ -188,7 +188,7 @@ func (t TeslaApi) sendCommand(command, body string) (cmdRes *CommandsRes, err er
 	return cmdRes, err
 }
 
-func (t TeslaApi) teslaAcctApi(method, endpoint, body string) (r *TeslaAcctRes, err error) {
+func (t *TeslaApi) teslaAcctApi(method, endpoint, body string) (r *TeslaAcctRes, err error) {
 	u := joinPath(teslaUrlBase, accountEndpoint, endpoint)
 	res, err := t.apiRequest(method, u, strings.NewReader(body))
 	if err != nil {

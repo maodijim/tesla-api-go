@@ -62,7 +62,7 @@ func (v Vehicle) GetIdStr() string {
 	return strconv.FormatInt(v.Id, 10)
 }
 
-func (t TeslaApi) ListVehicles() (vs []Vehicle, err error) {
+func (t *TeslaApi) ListVehicles() (vs []Vehicle, err error) {
 	u := joinPath(commandUrlBase, vehicleEndpoint)
 	res, err := t.apiRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -76,7 +76,7 @@ func (t TeslaApi) ListVehicles() (vs []Vehicle, err error) {
 	return vs, err
 }
 
-func (t TeslaApi) ListVehicleById(id string) (v Vehicle, err error) {
+func (t *TeslaApi) ListVehicleById(id string) (v Vehicle, err error) {
 	u := joinPath(commandUrlBase, vehicleEndpoint, id)
 	res, err := t.apiRequest(http.MethodGet, u, nil)
 	if err != nil {

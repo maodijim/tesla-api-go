@@ -53,12 +53,12 @@ func (t *TeslaApi) DriveState() (ds *DriveState, err error) {
 	return ds, err
 }
 
-func (t TeslaApi) RemoteStartDrive() (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) RemoteStartDrive() (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(cmdDriveRemoteStart, "")
 }
 
 // SetSpeedLimit speed limit between 50 - 90
-func (t TeslaApi) SetSpeedLimit(limitMph int) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) SetSpeedLimit(limitMph int) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdDriveSetLimit,
 		t.formUrlEncode(
@@ -77,7 +77,7 @@ func (t TeslaApi) SetSpeedLimit(limitMph int) (cmdRes *CommandsRes, err error) {
 // Note: the password parameter isn't required to turn on or off Valet Mode, even with a previous PIN set.
 // If you clear the PIN and activate Valet Mode without the parameter,
 //  you will only be able to deactivate it from your car's screen by signing into your Tesla account.
-func (t TeslaApi) SetValetMode(on bool, password string) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) SetValetMode(on bool, password string) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdDriverSetValet,
 		t.formUrlEncode(
@@ -89,14 +89,14 @@ func (t TeslaApi) SetValetMode(on bool, password string) (cmdRes *CommandsRes, e
 	)
 }
 
-func (t TeslaApi) ResetValetPin() (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) ResetValetPin() (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdDriveResetValetPin,
 		"",
 	)
 }
 
-func (t TeslaApi) ActivateSpeedLimit(pin string) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) ActivateSpeedLimit(pin string) (cmdRes *CommandsRes, err error) {
 	if len(pin) != 4 {
 		return cmdRes, ErrInvalidPinFormat
 	}
@@ -107,7 +107,7 @@ func (t TeslaApi) ActivateSpeedLimit(pin string) (cmdRes *CommandsRes, err error
 	))
 }
 
-func (t TeslaApi) DeactivateSpeedLimit(pin string) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) DeactivateSpeedLimit(pin string) (cmdRes *CommandsRes, err error) {
 	if len(pin) != 4 {
 		return cmdRes, ErrInvalidPinFormat
 	}
@@ -121,7 +121,7 @@ func (t TeslaApi) DeactivateSpeedLimit(pin string) (cmdRes *CommandsRes, err err
 	)
 }
 
-func (t TeslaApi) ClearSpeedLimitPin(pin string) (cmdRes *CommandsRes, err error) {
+func (t *TeslaApi) ClearSpeedLimitPin(pin string) (cmdRes *CommandsRes, err error) {
 	if len(pin) != 4 {
 		return cmdRes, ErrInvalidPinFormat
 	}
