@@ -31,6 +31,7 @@ type ChargeState struct {
 	BatteryHeaterOn             bool        `json:"battery_heater_on"`
 	BatteryLevel                int         `json:"battery_level"`
 	BatteryRange                float64     `json:"battery_range"`
+	ChargeAmps                  int         `json:"charge_amps"`
 	ChargeCurrentRequest        int         `json:"charge_current_request"`
 	ChargeCurrentRequestMax     int         `json:"charge_current_request_max"`
 	ChargeEnableRequest         bool        `json:"charge_enable_request"`
