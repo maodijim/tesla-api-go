@@ -23,6 +23,7 @@ const (
 	teslaUrlBase    = "https://www.tesla.com"
 	accountEndpoint = "teslaaccount"
 	vehicleEndpoint = "/api/1/vehicles"
+	userEndpoint    = "/api/1/users"
 	dataReqEndpoint = "data_request"
 	commandEndpoint = "command"
 )
@@ -134,6 +135,9 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 			return res, errors.New("access token expired but no refresh token provided")
 		}
 		req.Header.Add("Authorization", "Bearer "+t.accessToken)
+		if t.refreshToken != "" {
+			t.setAuthCookies()
+		}
 	}
 	for _, k := range t.cookies {
 		req.AddCookie(k)
@@ -149,7 +153,7 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 			return t.apiRequest(method, url, body)
 		}
 	}
-	t.cookies = res.Cookies()
+	t.setCookies(req.Cookies())
 	return res, err
 }
 

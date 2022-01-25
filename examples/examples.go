@@ -13,6 +13,7 @@ func main() {
 	teslaApi.Login()
 	vehicles, _ := teslaApi.ListVehicles()
 	_ = teslaApi.SetActiveVehicle(vehicles[0])
+	_, _ = teslaApi.GetSuperChargingHistory()
 	_, _ = teslaApi.VehicleData()
 	_ = teslaApi.IsCharging()
 	_ = teslaApi.IsFastCharging()

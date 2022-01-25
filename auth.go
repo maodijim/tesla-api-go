@@ -46,6 +46,8 @@ var (
 	redirectUri         = "https://auth.tesla.com/void/callback"
 	codeChallengeMethod = "S256"
 	scope               = "openid email offline_access"
+	accessTokenExpire   = time.Now().Add(time.Hour * 8)
+	refreshTokenExpire  = time.Now().Add(time.Hour * 8760)
 )
 
 type AuthRes struct {
@@ -185,8 +187,7 @@ func (t *TeslaApi) getToken(authCode string) (err error) {
 	if res.StatusCode != 200 {
 		return errors.New(aRes.Err)
 	}
-	t.refreshToken = aRes.RefreshToken
-	t.accessToken = aRes.AccessToken
+	t.setToken(aRes.RefreshToken, aRes.AccessToken)
 	t.setAuthCookies()
 	t.renewingToken = false
 	return err
@@ -217,8 +218,7 @@ func (t *TeslaApi) renewToken() (err error) {
 		return errors.New(aRes.Err)
 	}
 
-	t.refreshToken = aRes.RefreshToken
-	t.accessToken = aRes.AccessToken
+	t.setToken(aRes.RefreshToken, aRes.AccessToken)
 	t.setAuthCookies()
 	t.renewingToken = false
 	return err
@@ -233,40 +233,56 @@ func (t TeslaApi) isAuth() bool {
 	return t.accessToken != "" && !isTokenExpired(t.accessToken)
 }
 
-func (t *TeslaApi) setAuthCookies() {
-	found := 0
-	for _, k := range t.cookies {
-		if k.Name == webAuthCookieField {
-			k.Value = t.accessToken
-			found++
-		} else if k.Name == webRefreshCookieField {
-			k.Value = t.refreshToken
-			found += 2
-		}
-	}
-	authCook := []*http.Cookie{
-		{
-			Name:   webAuthCookieField,
-			Value:  t.accessToken,
-			Domain: "www.tesla.com",
-			Path:   "/",
-		},
-		{
-			Name:   webRefreshCookieField,
-			Value:  t.refreshToken,
-			Domain: "www.tesla.com",
-			Path:   "/",
-		},
-	}
-	switch found {
-	case 0:
-		t.cookies = append(t.cookies, authCook...)
-	case 1:
-		t.cookies = append(t.cookies, authCook[1])
-	case 2:
-		t.cookies = append(t.cookies, authCook[0])
+func (t *TeslaApi) setToken(refreshToken, accessToken string) {
+	t.refreshToken = refreshToken
+	t.accessToken = accessToken
+	accessTokenExpire = time.Now().Add(time.Hour * 8)
+}
+
+func (t *TeslaApi) setCookies(cks []*http.Cookie) {
+	cksMap := map[string]*http.Cookie{}
+	var newCks []*http.Cookie
+
+	for _, ck := range cks {
+		cksMap[ck.Name] = ck
 	}
 
+	for _, ock := range t.cookies {
+		if time.Since(ock.Expires) < 0 {
+			continue
+		} else if nck, ok := cksMap[ock.Name]; ok && nck.Domain == ock.Domain {
+			newCks = append(newCks, nck)
+			delete(cksMap, ock.Name)
+		} else {
+			newCks = append(newCks, ock)
+		}
+	}
+
+	for _, v := range cksMap {
+		newCks = append(newCks, v)
+	}
+
+	t.cookies = newCks
+}
+
+func (t *TeslaApi) setAuthCookies() {
+	authCook := []*http.Cookie{
+		{
+			Name:    webAuthCookieField,
+			Value:   t.accessToken,
+			Domain:  "www.tesla.com",
+			Path:    "/",
+			Expires: accessTokenExpire,
+		},
+		{
+			Name:    webRefreshCookieField,
+			Value:   t.refreshToken,
+			Domain:  "www.tesla.com",
+			Path:    "/",
+			Expires: refreshTokenExpire,
+		},
+	}
+	t.setCookies(authCook)
 }
 
 func parseAuthRes(r io.Reader) (res *AuthRes, err error) {

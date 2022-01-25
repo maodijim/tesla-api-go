@@ -1,6 +1,7 @@
 package tesla
 
 import (
+	"net/http"
 	"testing"
 )
 
@@ -66,6 +67,58 @@ func TestTeslaApi_getAuthCode(t1 *testing.T) {
 			tt.ta.getChallenge()
 			tt.ta.RefreshToken()
 			tt.ta.isAuth()
+		})
+	}
+}
+
+func TestTeslaApi_setCookies(t1 *testing.T) {
+	type fields struct {
+		cookies []*http.Cookie
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		cks    []*http.Cookie
+		result int
+	}{
+		{
+			name: "test set cookies",
+			fields: fields{cookies: []*http.Cookie{
+				{
+					Name: "test org cookies", Domain: "test-domain.com",
+				},
+			}},
+			cks: []*http.Cookie{
+				{
+					Name: "test cookies", Domain: "test-domain.com",
+				},
+			},
+			result: 2,
+		},
+		{
+			name: "test duplicate cookies",
+			fields: fields{cookies: []*http.Cookie{
+				{
+					Name: "test cookies", Domain: "test-domain.com",
+				},
+			}},
+			cks: []*http.Cookie{
+				{
+					Name: "test cookies", Domain: "test-domain.com",
+				},
+			},
+			result: 1,
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &TeslaApi{
+				cookies: tt.fields.cookies,
+			}
+			t.setCookies(tt.cks)
+			if tt.result != len(t.cookies) {
+				t1.Errorf("only getting %d cookies expected %d", len(t.cookies), tt.result)
+			}
 		})
 	}
 }

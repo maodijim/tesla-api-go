@@ -291,6 +291,7 @@ type SuperChargingHistory struct {
 	VehicleMakeType string      `json:"vehicleMakeType"`
 }
 
+// GetSuperChargingHistory only works when logging in via username and password
 func (t *TeslaApi) GetSuperChargingHistory() (ch []SuperChargingHistory, err error) {
 	res, err := t.teslaAcctApi(http.MethodGet, "charging/api/history", t.formUrlEncode(map[string]string{
 		"vin": t.activeVehicleData.Vin,
