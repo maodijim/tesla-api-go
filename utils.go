@@ -1,11 +1,10 @@
 package tesla
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -15,6 +14,9 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -268,8 +270,9 @@ func parseResp(res *http.Response, respType interface{}) (err error) {
 	if err != nil {
 		return err
 	}
-
-	err = json.Unmarshal(body, respType)
+	decoder := json.NewDecoder(bytes.NewBuffer(body))
+	decoder.UseNumber()
+	err = decoder.Decode(respType)
 	if err != nil {
 		return err
 	}
@@ -307,9 +310,25 @@ func convertMapResp(in map[string]interface{}, outType interface{}, structKeyMap
 			kind := f.Kind()
 			switch kind {
 			case reflect.Float64:
-				f.SetFloat(val.(float64))
+				if num, ok := val.(float64); ok {
+					f.SetFloat(num)
+				} else {
+					n, err := val.(json.Number).Float64()
+					if err != nil {
+						log.Warnf("failed to convert val %v to float64", val)
+					}
+					f.SetFloat(n)
+				}
 			case reflect.Int64, reflect.Int:
-				f.SetInt(int64(val.(float64)))
+				if num, ok := val.(int); ok {
+					f.SetInt(int64(num))
+				} else {
+					n, err := val.(json.Number).Int64()
+					if err != nil {
+						log.Warnf("failed to convert val %v to int", val)
+					}
+					f.SetInt(n)
+				}
 			case reflect.String:
 				f.SetString(val.(string))
 			case reflect.Slice:
