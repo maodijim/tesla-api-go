@@ -122,7 +122,7 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 	req.Header.Add("User-Agent", "")
 	req.Header.Add("X-Tesla-User-Agent", "")
 	if method == http.MethodPost {
-		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+		req.Header.Add("Content-Type", "application/json")
 	}
 	if t.accessToken != "" {
 		expired := isTokenExpired(t.accessToken)
@@ -215,6 +215,14 @@ func (t TeslaApi) formUrlEncode(form map[string]string) (content string) {
 	}
 	content = f.Encode()
 	return content
+}
+
+func (t TeslaApi) jsonEncode(data interface{}) (content string) {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }
 
 func getAuthBase(global bool) string {

@@ -78,7 +78,7 @@ func (t *TeslaApi) TriggerHomeLink() (cmdRes *CommandsRes, err error) {
 	if !vs.HomelinkNearby {
 		return cmdRes, ErrNoHomeLinkNearBy
 	}
-	return t.sendCommand(cmdHomeLink, t.formUrlEncode(
+	return t.sendCommand(cmdHomeLink, t.jsonEncode(
 		map[string]string{
 			"lat": strconv.FormatFloat(ds.Latitude, 'f', -1, 64),
 			"lon": strconv.FormatFloat(ds.Latitude, 'f', -1, 64),
@@ -86,7 +86,7 @@ func (t *TeslaApi) TriggerHomeLink() (cmdRes *CommandsRes, err error) {
 }
 
 func (t *TeslaApi) SetSentryMode(on bool) (cmdRes *CommandsRes, err error) {
-	return t.sendCommand(cmdSentryMode, t.formUrlEncode(
+	return t.sendCommand(cmdSentryMode, t.jsonEncode(
 		map[string]string{
 			"on": strconv.FormatBool(on),
 		}))
@@ -114,7 +114,7 @@ func (t TrunkType) String() string {
 }
 
 func (t *TeslaApi) ActuateTrunk(trunk TrunkType) (cmdRes *CommandsRes, err error) {
-	cmdRes, err = t.sendCommand(cmdActuateTrunk, t.formUrlEncode(map[string]string{
+	cmdRes, err = t.sendCommand(cmdActuateTrunk, t.jsonEncode(map[string]string{
 		"which_trunk": trunk.String(),
 	}))
 	return cmdRes, err
@@ -132,7 +132,7 @@ func (w WindowCmd) String() string {
 }
 
 func (t *TeslaApi) WindowControl(winCmd WindowCmd, lat, lon float64) (cmdRes *CommandsRes, err error) {
-	cmdRes, err = t.sendCommand(cmdWinsContr, t.formUrlEncode(map[string]string{
+	cmdRes, err = t.sendCommand(cmdWinsContr, t.jsonEncode(map[string]string{
 		"command": winCmd.String(),
 		"lat":     strconv.FormatFloat(lat, 'f', -1, 64),
 		"lon":     strconv.FormatFloat(lon, 'f', -1, 64),
@@ -141,7 +141,7 @@ func (t *TeslaApi) WindowControl(winCmd WindowCmd, lat, lon float64) (cmdRes *Co
 }
 
 func (t *TeslaApi) SunRoofControl(winCmd WindowCmd) (cmdRes *CommandsRes, err error) {
-	return t.sendCommand(cmdSunRoofContr, t.formUrlEncode(map[string]string{
+	return t.sendCommand(cmdSunRoofContr, t.jsonEncode(map[string]string{
 		"state": winCmd.String(),
 	}))
 }
@@ -175,7 +175,7 @@ func (t *TeslaApi) MediaVolDown() (cmdRes *CommandsRes, err error) {
 }
 
 func (t *TeslaApi) ScheduleSoftwareUpdate(offsetSec int) (cmdRes *CommandsRes, err error) {
-	return t.sendCommand(cmdSoftwareScheduleUpdate, t.formUrlEncode(map[string]string{
+	return t.sendCommand(cmdSoftwareScheduleUpdate, t.jsonEncode(map[string]string{
 		"offset_sec": strconv.FormatInt(int64(offsetSec), 10),
 	}))
 }

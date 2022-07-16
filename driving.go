@@ -61,7 +61,7 @@ func (t *TeslaApi) RemoteStartDrive() (cmdRes *CommandsRes, err error) {
 func (t *TeslaApi) SetSpeedLimit(limitMph int) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdDriveSetLimit,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"limit_mph": strconv.FormatInt(int64(limitMph), 10),
 			},
@@ -80,7 +80,7 @@ func (t *TeslaApi) SetSpeedLimit(limitMph int) (cmdRes *CommandsRes, err error) 
 func (t *TeslaApi) SetValetMode(on bool, password string) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdDriverSetValet,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"on":       strconv.FormatBool(on),
 				"password": password,
@@ -100,7 +100,7 @@ func (t *TeslaApi) ActivateSpeedLimit(pin string) (cmdRes *CommandsRes, err erro
 	if len(pin) != 4 {
 		return cmdRes, ErrInvalidPinFormat
 	}
-	return t.sendCommand(cmdDriverActivateSpeedLimit, t.formUrlEncode(
+	return t.sendCommand(cmdDriverActivateSpeedLimit, t.jsonEncode(
 		map[string]string{
 			"pin": pin,
 		},
@@ -113,7 +113,7 @@ func (t *TeslaApi) DeactivateSpeedLimit(pin string) (cmdRes *CommandsRes, err er
 	}
 	return t.sendCommand(
 		cmdDriverDeactivateSpeedLimit,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"pin": pin,
 			},
@@ -127,7 +127,7 @@ func (t *TeslaApi) ClearSpeedLimitPin(pin string) (cmdRes *CommandsRes, err erro
 	}
 	return t.sendCommand(
 		cmdDriverClearSpeedLimitPin,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"pin": pin,
 			},

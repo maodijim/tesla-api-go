@@ -77,7 +77,7 @@ func (t *TeslaApi) ClimateAutoAcStop() (o *CommandsRes, err error) {
 func (t *TeslaApi) SetClimateTemp(driverTemp, passengerTemp float64) (o *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateSetTemp,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"driver_temp":    strconv.FormatFloat(driverTemp, 'f', 1, 64),
 				"passenger_temp": strconv.FormatFloat(passengerTemp, 'f', 1, 64),
@@ -89,7 +89,7 @@ func (t *TeslaApi) SetClimateTemp(driverTemp, passengerTemp float64) (o *Command
 func (t *TeslaApi) SetClimatePreConditionMax(on bool) (o *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateMax,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"on": strconv.FormatBool(on),
 			},
@@ -123,7 +123,7 @@ func (t *TeslaApi) SetSeatHeater(heater SeatType, level int) (o *CommandsRes, er
 	}
 	return t.sendCommand(
 		cmdClimateSeatHeater,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"heater": strconv.FormatInt(int64(heater), 10),
 				"level":  strconv.FormatInt(int64(level), 10),
@@ -135,7 +135,7 @@ func (t *TeslaApi) SetSeatHeater(heater SeatType, level int) (o *CommandsRes, er
 func (t *TeslaApi) SetSteeringHeater(on bool) (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(
 		cmdClimateSteeringHeat,
-		t.formUrlEncode(
+		t.jsonEncode(
 			map[string]string{
 				"on": strconv.FormatBool(on),
 			},

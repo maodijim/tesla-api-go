@@ -174,7 +174,7 @@ func (t *TeslaApi) SetChargeLimit(percent int) (o *CommandsRes, err error) {
 	}
 	return t.sendCommand(
 		cmdChargeLimit,
-		t.formUrlEncode(map[string]string{
+		t.jsonEncode(map[string]string{
 			"percent": strconv.FormatInt(int64(percent), 10),
 		}),
 	)
@@ -187,7 +187,7 @@ func (t *TeslaApi) SetChargeAmps(amps int) (o *CommandsRes, err error) {
 	}
 	return t.sendCommand(
 		cmdChargeAmp,
-		t.formUrlEncode(map[string]string{
+		t.jsonEncode(map[string]string{
 			"charging_amps": strconv.FormatInt(int64(amps), 10),
 		}),
 	)
@@ -199,7 +199,7 @@ func (t *TeslaApi) SetScheduledCharge(enable bool, time int) (o *CommandsRes, er
 	}
 	return t.sendCommand(
 		cmdChargeSchedule,
-		t.formUrlEncode(map[string]string{
+		t.jsonEncode(map[string]string{
 			"enable": strconv.FormatBool(enable),
 			"time":   strconv.FormatInt(int64(time), 10),
 		}),
@@ -219,7 +219,7 @@ func (t *TeslaApi) SetScheduledDeparture(enable bool, departureTime, endOffPeakT
 	}
 	return t.sendCommand(
 		cmdChargeDeparture,
-		t.formUrlEncode(map[string]string{
+		t.jsonEncode(map[string]string{
 			"enable":                          strconv.FormatBool(enable),
 			"departure_time":                  strconv.FormatInt(int64(departureTime), 10),
 			"preconditioning_enabled":         strconv.FormatBool(preconditioningEnabled),
