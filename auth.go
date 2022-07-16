@@ -4,15 +4,16 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/proto"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -114,13 +115,26 @@ func (t *TeslaApi) getAuthCode() (authCode string) {
 		SlowMotion(1 * time.Second).
 		MustConnect().
 		MustPage(authUrl + "?" + req.URL.RawQuery)
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 	page.MustWaitLoad()
+	log.Infof("waiting for login page to load")
+	page.Sleeper(rod.DefaultSleeper).MustElement("#form-input-identity").MustInput(t.identity)
+	page.MustElement("#form-submit-continue").MustClick()
+
+	// Re-enter login
+	page.MustWaitLoad()
+	log.Infof("waiting for email input to load")
 	page.MustElement("#form-input-identity").MustInput(t.identity)
+	page.MustElement("#form-submit-continue").MustClick()
+
+	page.MustWaitLoad()
+	log.Infof("waiting for credential input to load")
 	page.MustElement("#form-input-credential").MustInput(t.credential)
 	page.MustElement("#form-submit-continue").MustClick()
 	page.MustWaitLoad()
-	if _, err := page.Element("div.recaptcha.tds-form-item.tds-form-item--error"); err == nil {
+
+	log.Infof("checking recaptcha")
+	if _, err := page.Sleeper(rod.NotFoundSleeper).Element("div.recaptcha.tds-form-item.tds-form-item--error"); err == nil {
 		page.MustElement("#form-input-credential").MustInput(t.credential)
 		log.Infof("capcha found please complete the capcha in browser and sign in")
 		err = waitForSignIn(page)
