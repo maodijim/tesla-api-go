@@ -122,6 +122,11 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 	req.Header.Add("User-Agent", "")
 	req.Header.Add("X-Tesla-User-Agent", "")
 	if method == http.MethodPost {
+		if url == tokenUrl {
+			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+		} else {
+			req.Header.Add("Content-Type", "application/json")
+		}
 		req.Header.Add("Content-Type", "application/json")
 	}
 	if t.accessToken != "" {
