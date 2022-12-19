@@ -5,6 +5,20 @@ import (
 	"net/http"
 )
 
+type MediaInfo struct {
+	AudioVolume          float64 `json:"audio_volume"`
+	AudioVolumeIncrement float64 `json:"audio_volume_increment"`
+	AudioVolumeMax       float64 `json:"audio_volume_max"`
+	MediaPlaybackStatus  string  `json:"media_playback_status"`
+	NowPlayingAlbum      string  `json:"now_playing_album"`
+	NowPlayingArtist     string  `json:"now_playing_artist"`
+	NowPlayingDuration   int     `json:"now_playing_duration"`
+	NowPlayingElapsed    int     `json:"now_playing_elapsed"`
+	NowPlayingSource     string  `json:"now_playing_source"`
+	NowPlayingStation    string  `json:"now_playing_station"`
+	NowPlayingTitle      string  `json:"now_playing_title"`
+}
+
 type GuiSettings struct {
 	Gui24HourTime       bool   `json:"gui_24_hour_time"`
 	GuiChargeRateUnits  string `json:"gui_charge_rate_units"`
@@ -47,6 +61,7 @@ type VehicleState struct {
 	MediaState          struct {
 		RemoteControlEnabled bool `json:"remote_control_enabled"`
 	} `json:"media_state"`
+	MediaInfo               MediaInfo      `json:"media_info"`
 	NotificationsSupported  bool           `json:"notifications_supported"`
 	Odometer                float64        `json:"odometer"`
 	ParsedCalendarSupported bool           `json:"parsed_calendar_supported"`
@@ -69,16 +84,34 @@ type VehicleState struct {
 		MinLimitMph     float64 `json:"min_limit_mph"`
 		PinCodeSet      bool    `json:"pin_code_set"`
 	} `json:"speed_limit_mode"`
-	SummonStandbyModeEnabled bool        `json:"summon_standby_mode_enabled"`
-	SunRoofPercentOpen       int         `json:"sun_roof_percent_open"`
-	SunRoofState             string      `json:"sun_roof_state"`
-	Timestamp                int64       `json:"timestamp"`
-	ValetMode                bool        `json:"valet_mode"`
-	ValetPinNeeded           bool        `json:"valet_pin_needed"`
-	VehicleName              interface{} `json:"vehicle_name"`
-	VehicleSelfTestProgress  int         `json:"vehicle_self_test_progress"`
-	VehicleSelfTestRequested bool        `json:"vehicle_self_test_requested"`
-	WebcamAvailable          bool        `json:"webcam_available"`
+	SummonStandbyModeEnabled   bool        `json:"summon_standby_mode_enabled"`
+	SunRoofPercentOpen         int         `json:"sun_roof_percent_open"`
+	SunRoofState               string      `json:"sun_roof_state"`
+	Timestamp                  int64       `json:"timestamp"`
+	ValetMode                  bool        `json:"valet_mode"`
+	ValetPinNeeded             bool        `json:"valet_pin_needed"`
+	VehicleName                interface{} `json:"vehicle_name"`
+	VehicleSelfTestProgress    int         `json:"vehicle_self_test_progress"`
+	VehicleSelfTestRequested   bool        `json:"vehicle_self_test_requested"`
+	WebcamAvailable            bool        `json:"webcam_available"`
+	TpmsHardWarningFl          bool        `json:"tpms_hard_warning_fl"`
+	TpmsHardWarningFr          bool        `json:"tpms_hard_warning_fr"`
+	TpmsHardWarningRl          bool        `json:"tpms_hard_warning_rl"`
+	TpmsHardWarningRr          bool        `json:"tpms_hard_warning_rr"`
+	TpmsLastSeenPressureTimeFl int         `json:"tpms_last_seen_pressure_time_fl"`
+	TpmsLastSeenPressureTimeFr int         `json:"tpms_last_seen_pressure_time_fr"`
+	TpmsLastSeenPressureTimeRl int         `json:"tpms_last_seen_pressure_time_rl"`
+	TpmsLastSeenPressureTimeRr int         `json:"tpms_last_seen_pressure_time_rr"`
+	TpmsPressureFl             float64     `json:"tpms_pressure_fl"`
+	TpmsPressureFr             float64     `json:"tpms_pressure_fr"`
+	TpmsPressureRl             float64     `json:"tpms_pressure_rl"`
+	TpmsPressureRr             float64     `json:"tpms_pressure_rr"`
+	TpmsRcpFrontValue          float64     `json:"tpms_rcp_front_value"`
+	TpmsRcpRearValue           float64     `json:"tpms_rcp_rear_value"`
+	TpmsSoftWarningFl          bool        `json:"tpms_soft_warning_fl"`
+	TpmsSoftWarningFr          bool        `json:"tpms_soft_warning_fr"`
+	TpmsSoftWarningRl          bool        `json:"tpms_soft_warning_rl"`
+	TpmsSoftWarningRr          bool        `json:"tpms_soft_warning_rr"`
 }
 
 type VehicleConfig struct {
