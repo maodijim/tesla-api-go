@@ -123,20 +123,10 @@ func (t *TeslaApi) getAuthCode() (authCode string) {
 
 	// Re-enter login
 	page.MustWaitLoad()
-	log.Infof("waiting for email input to load")
-	page.MustElement("#form-input-identity").MustInput(t.identity)
-	page.MustElement("#form-submit-continue").MustClick()
-
-	page.MustWaitLoad()
-	log.Infof("waiting for credential input to load")
-	page.MustElement("#form-input-credential").MustInput(t.credential)
-	page.MustElement("#form-submit-continue").MustClick()
-	page.MustWaitLoad()
-
-	log.Infof("checking recaptcha")
-	if _, err := page.Sleeper(rod.NotFoundSleeper).Element("div.recaptcha.tds-form-item.tds-form-item--error"); err == nil {
+	// Check if captcha is required
+	if _, err := page.Sleeper(rod.NotFoundSleeper).Element("#rc-anchor-container"); err != nil {
+		log.Infof("captcha required please complete the captcha in browser and and continue to sign in")
 		page.MustElement("#form-input-credential").MustInput(t.credential)
-		log.Infof("capcha found please complete the capcha in browser and sign in")
 		err = waitForSignIn(page)
 	}
 	i, _ := page.Info()
