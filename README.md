@@ -116,6 +116,8 @@ teslaApi.ActuateTrunk(tesla.FrontTrunkType)
   - Software Updates
     - [x] /api/1/vehicles/{id}/command/schedule_software_update
     - [x] /api/1/vehicles/{id}/command/cancel_software_update
+  - Remote Toybox
+    - [x] /api/1/vehicles/{id}/command/remote_boombox
 - [ ] Streaming
 - [ ] Autopark/Summon
 - [ ] Solar

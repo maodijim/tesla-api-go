@@ -1,6 +1,8 @@
 package tesla
 
 import (
+	"net/http"
+	"reflect"
 	"testing"
 )
 
@@ -35,6 +37,59 @@ func TestTeslaApi_Command(t1 *testing.T) {
 			_, _ = tt.ta.WindowControl(WinCloseCmd, 100.00, 100.00)
 			_, _ = tt.ta.ScheduleSoftwareUpdate(100)
 			_, _ = tt.ta.CancelSoftwareUpdate()
+		})
+	}
+}
+
+func TestTeslaApi_RemoteBoomBox(t1 *testing.T) {
+	type fields struct {
+		AuthReq           AuthReq
+		client            *http.Client
+		cookies           []*http.Cookie
+		activeVehicle     Vehicle
+		activeVehicleData VehicleData
+		accessToken       string
+		refreshToken      string
+		renewingToken     bool
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		wantCmdRes *CommandsRes
+		wantErr    bool
+	}{
+		{
+			name: "Test remote boom box version check",
+			fields: fields{
+				activeVehicleData: VehicleData{
+					VehicleState: VehicleState{
+						CarVersion: "2022.43.25.1",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &TeslaApi{
+				AuthReq:           tt.fields.AuthReq,
+				client:            tt.fields.client,
+				cookies:           tt.fields.cookies,
+				activeVehicle:     tt.fields.activeVehicle,
+				activeVehicleData: tt.fields.activeVehicleData,
+				accessToken:       tt.fields.accessToken,
+				refreshToken:      tt.fields.refreshToken,
+				renewingToken:     tt.fields.renewingToken,
+			}
+			gotCmdRes, err := t.RemoteBoomBox()
+			if (err != nil) != tt.wantErr {
+				t1.Errorf("RemoteBoomBox() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotCmdRes, tt.wantCmdRes) {
+				t1.Errorf("RemoteBoomBox() gotCmdRes = %v, want %v", gotCmdRes, tt.wantCmdRes)
+			}
 		})
 	}
 }

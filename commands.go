@@ -26,6 +26,7 @@ const (
 	cmdMediaVolDown           = "media_volume_down"
 	cmdSoftwareCancelUpdate   = "cancel_software_update"
 	cmdSoftwareScheduleUpdate = "schedule_software_update"
+	cmdRemoteBoomBox          = "remote_boombox"
 )
 
 func (t *TeslaApi) WakeUp() (v *Vehicle, err error) {
@@ -182,4 +183,16 @@ func (t *TeslaApi) ScheduleSoftwareUpdate(offsetSec int) (cmdRes *CommandsRes, e
 
 func (t *TeslaApi) CancelSoftwareUpdate() (cmdRes *CommandsRes, err error) {
 	return t.sendCommand(cmdSoftwareCancelUpdate, "")
+}
+
+// RemoteBoomBox Let the car fart remotely on version 2022.44.25.1 and above.
+func (t *TeslaApi) RemoteBoomBox() (cmdRes *CommandsRes, err error) {
+	if t.activeVehicleData.VehicleState.CarVersion < "2022.44.25.1" {
+		return cmdRes, fmt.Errorf(
+			"remote boombox only supported since %s: %w",
+			t.activeVehicleData.VehicleState.CarVersion,
+			ErrCmdNotSupportedVer,
+		)
+	}
+	return t.sendCommand(cmdRemoteBoomBox, "")
 }

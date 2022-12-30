@@ -71,7 +71,7 @@ type AuthReq struct {
 }
 
 // if customVerifier is empty generate random verifier
-func (t TeslaApi) getVerifier(customVerifier string) string {
+func (t *TeslaApi) getVerifier(customVerifier string) string {
 	if customVerifier != "" && len(customVerifier) == 86 {
 		return customVerifier
 	} else if len(customVerifier) != 86 {
@@ -82,7 +82,7 @@ func (t TeslaApi) getVerifier(customVerifier string) string {
 	return string(b)
 }
 
-func (t TeslaApi) getChallenge() string {
+func (t *TeslaApi) getChallenge() string {
 	return base64.StdEncoding.EncodeToString([]byte(t.CodeVerifier))
 }
 
@@ -229,11 +229,11 @@ func (t *TeslaApi) renewToken() (err error) {
 }
 
 // RefreshToken Return stored refresh token
-func (t TeslaApi) RefreshToken() string {
+func (t *TeslaApi) RefreshToken() string {
 	return t.refreshToken
 }
 
-func (t TeslaApi) isAuth() bool {
+func (t *TeslaApi) isAuth() bool {
 	return t.accessToken != "" && !isTokenExpired(t.accessToken)
 }
 

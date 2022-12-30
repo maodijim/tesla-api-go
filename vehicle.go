@@ -90,27 +90,27 @@ func (t *TeslaApi) ListVehicleById(id string) (v Vehicle, err error) {
 	return v, err
 }
 
-func (t TeslaApi) GetVehicleName() string {
+func (t *TeslaApi) GetVehicleName() string {
 	return t.activeVehicle.DisplayName
 }
 
-func (t TeslaApi) GetVehicleId() int {
+func (t *TeslaApi) GetVehicleId() int {
 	return t.activeVehicle.VehicleId
 }
 
-func (t TeslaApi) GetId() int64 {
+func (t *TeslaApi) GetId() int64 {
 	return t.activeVehicle.Id
 }
 
-func (t TeslaApi) GetVin() string {
+func (t *TeslaApi) GetVin() string {
 	return t.activeVehicle.Vin
 }
 
-func (t TeslaApi) GetVehicleOptions() string {
+func (t *TeslaApi) GetVehicleOptions() string {
 	return t.activeVehicleData.OptionCodes
 }
 
-func (t TeslaApi) GetActiveVehicle() Vehicle {
+func (t *TeslaApi) GetActiveVehicle() Vehicle {
 	return t.activeVehicle
 }
 

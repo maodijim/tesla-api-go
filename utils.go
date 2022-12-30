@@ -31,11 +31,12 @@ const (
 )
 
 var (
-	ErrVehicleInSleep  = errors.New(`vehicle unavailable: {:error=>"vehicle unavailable:"}`)
-	ErrInvalidToken    = errors.New("invalid bearer token")
-	ErrNoActiveVehicle = errors.New("no active vehicle please run SetActiveVehicle")
-	ErrWakeTimeout     = errors.New("wake up vehicle timed out")
-	WakeTimeoutSec     = 30
+	ErrVehicleInSleep     = errors.New(`vehicle unavailable: {:error=>"vehicle unavailable:"}`)
+	ErrInvalidToken       = errors.New("invalid bearer token")
+	ErrNoActiveVehicle    = errors.New("no active vehicle please run SetActiveVehicle")
+	ErrWakeTimeout        = errors.New("wake up vehicle timed out")
+	ErrCmdNotSupportedVer = errors.New("not supported on this version")
+	WakeTimeoutSec        = 30
 	// AutoWakeUp Automatically wake up vehicle if vehicle in sleep
 	AutoWakeUp               = true
 	defaultReqInterval       = time.Second * 5
@@ -213,7 +214,7 @@ func (t *TeslaApi) teslaAcctApi(method, endpoint, body string) (r *TeslaAcctRes,
 	return r, err
 }
 
-func (t TeslaApi) formUrlEncode(form map[string]string) (content string) {
+func (t *TeslaApi) formUrlEncode(form map[string]string) (content string) {
 	f := url.Values{}
 	for k, v := range form {
 		f.Add(k, v)
@@ -222,7 +223,7 @@ func (t TeslaApi) formUrlEncode(form map[string]string) (content string) {
 	return content
 }
 
-func (t TeslaApi) jsonEncode(data interface{}) (content string) {
+func (t *TeslaApi) jsonEncode(data interface{}) (content string) {
 	b, err := json.Marshal(data)
 	if err != nil {
 		return ""
