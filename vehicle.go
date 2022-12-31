@@ -62,6 +62,10 @@ func (v Vehicle) GetIdStr() string {
 	return strconv.FormatInt(v.Id, 10)
 }
 
+func (v Vehicle) GetVehicleIdStr() string {
+	return strconv.FormatInt(int64(v.VehicleId), 10)
+}
+
 func (t *TeslaApi) ListVehicles() (vs []Vehicle, err error) {
 	u := joinPath(commandUrlBase, vehicleEndpoint)
 	res, err := t.apiRequest(http.MethodGet, u, nil)

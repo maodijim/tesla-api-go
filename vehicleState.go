@@ -2,7 +2,6 @@ package tesla
 
 import (
 	"errors"
-	"net/http"
 )
 
 type MediaInfo struct {
@@ -162,8 +161,7 @@ func (t *TeslaApi) VehicleData() (vd *VehicleData, err error) {
 	if t.activeVehicle.Id == 0 {
 		return vd, ErrNoActiveVehicle
 	}
-	u := joinPath(commandUrlBase, vehicleEndpoint, t.activeVehicle.GetIdStr(), "vehicle_data")
-	res, err := t.apiRequest(http.MethodGet, u, nil)
+	res, err := t.getVehicleCmd("vehicle_data", "")
 	if err != nil {
 		return vd, err
 	}

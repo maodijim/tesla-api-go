@@ -2,16 +2,18 @@ package tesla
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
 const (
-	cmdClimateAutoAcStart  = "auto_conditioning_start"
-	cmdClimateAutoAcStop   = "auto_conditioning_stop"
-	cmdClimateSetTemp      = "set_temps"
-	cmdClimateMax          = "set_preconditioning_max"
-	cmdClimateSeatHeater   = "remote_seat_heater_request"
-	cmdClimateSteeringHeat = "remote_steering_wheel_heater_request"
+	cmdClimateAutoAcStart             = "auto_conditioning_start"
+	cmdClimateAutoAcStop              = "auto_conditioning_stop"
+	cmdClimateSetTemp                 = "set_temps"
+	cmdClimateMax                     = "set_preconditioning_max"
+	cmdClimateSeatHeater              = "remote_seat_heater_request"
+	cmdClimateSteeringHeat            = "remote_steering_wheel_heater_request"
+	cmdClimateCabinOverheatProtection = "set_cop_temp"
 )
 
 var (
@@ -138,6 +140,22 @@ func (t *TeslaApi) SetSteeringHeater(on bool) (cmdRes *CommandsRes, err error) {
 		t.jsonEncode(
 			map[string]string{
 				"on": strconv.FormatBool(on),
+			},
+		),
+	)
+}
+
+// SetCabinOverheatProtectionTemp set cabin overheat protection temperature in Celsius
+func (t *TeslaApi) SetCabinOverheatProtectionTemp(temp int) (cmdRes *CommandsRes, err error) {
+	copAllowedTemp := []int{30, 35, 40}
+	if !contains(copAllowedTemp, temp) {
+		return cmdRes, fmt.Errorf("invalid temp must be one of %v", copAllowedTemp)
+	}
+	return t.sendCommand(
+		cmdClimateCabinOverheatProtection,
+		t.jsonEncode(
+			map[string]string{
+				"cop_temp": strconv.FormatInt(int64(temp), 10),
 			},
 		),
 	)

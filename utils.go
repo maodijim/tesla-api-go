@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -36,6 +35,7 @@ var (
 	ErrNoActiveVehicle    = errors.New("no active vehicle please run SetActiveVehicle")
 	ErrWakeTimeout        = errors.New("wake up vehicle timed out")
 	ErrCmdNotSupportedVer = errors.New("not supported on this version")
+	ErrNoWebRefreshToken  = errors.New("no web refresh token provided")
 	WakeTimeoutSec        = 30
 	// AutoWakeUp Automatically wake up vehicle if vehicle in sleep
 	AutoWakeUp               = true
@@ -64,6 +64,23 @@ type CommandsRes struct {
 		Reason string `json:"reason"`
 		Result bool   `json:"result"`
 	} `json:"response"`
+}
+
+type CommonRes struct {
+	BaseRes
+	Response struct {
+		ReleaseNotes    []ReleaseNote `json:"release_notes"`
+		DeployedVersion string        `json:"deployed_version"`
+		StagedVersion   string        `json:"staged_version"`
+	} `json:"response"`
+}
+
+type ReleaseNote struct {
+	Title           string `json:"title,omitempty"`
+	Subtitle        string `json:"subtitle,omitempty"`
+	Description     string `json:"description,omitempty"`
+	CustomerVersion string `json:"customer_version,omitempty"`
+	ImageUrl        string `json:"image_url,omitempty"`
 }
 
 type TeslaAcctRes struct {
@@ -181,6 +198,7 @@ func (t *TeslaApi) sendDataRequest(reqDataType string, reqResp interface{}) (err
 	return err
 }
 
+// SendCommand sends a command to the vehicle /api/1/vehicles/:id/command/:command
 func (t *TeslaApi) sendCommand(command, body string) (cmdRes *CommandsRes, err error) {
 	cmdRes = &CommandsRes{}
 	if t.activeVehicle.Id == 0 {
@@ -200,7 +218,18 @@ func (t *TeslaApi) sendCommand(command, body string) (cmdRes *CommandsRes, err e
 	return cmdRes, err
 }
 
+// Get Request to endpoint /api/1/vehicles/:id/:endpoint
+func (t *TeslaApi) getVehicleCmd(command, body string) (httpRes *http.Response, err error) {
+	u := joinPath(commandUrlBase, vehicleEndpoint, t.activeVehicle.GetIdStr(), command)
+	res, err := t.apiRequest(http.MethodGet, u, strings.NewReader(body))
+	return res, err
+}
+
+// teslaAcctApi Send Request to endpoint https://www.tesla.com/teslaaccount/:endpoint
 func (t *TeslaApi) teslaAcctApi(method, endpoint, body string) (r *TeslaAcctRes, err error) {
+	if t.webRefreshToken == "" {
+		return r, ErrNoWebRefreshToken
+	}
 	u := joinPath(teslaUrlBase, accountEndpoint, endpoint)
 	res, err := t.apiRequest(method, u, strings.NewReader(body))
 	if err != nil {
@@ -280,7 +309,7 @@ func joinPath(baseUrl string, paths ...string) string {
 
 func parseResp(res *http.Response, respType interface{}) (err error) {
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -360,4 +389,13 @@ func convertMapResp(in map[string]interface{}, outType interface{}, structKeyMap
 
 func timestampSince(timestamp int64) time.Duration {
 	return time.Since(time.UnixMilli(timestamp))
+}
+
+func contains[T comparable](s []T, e T) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

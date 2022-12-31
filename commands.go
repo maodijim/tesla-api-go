@@ -27,6 +27,7 @@ const (
 	cmdSoftwareCancelUpdate   = "cancel_software_update"
 	cmdSoftwareScheduleUpdate = "schedule_software_update"
 	cmdRemoteBoomBox          = "remote_boombox"
+	cmdReleaseNotes           = "release_notes"
 )
 
 func (t *TeslaApi) WakeUp() (v *Vehicle, err error) {
@@ -195,4 +196,24 @@ func (t *TeslaApi) RemoteBoomBox() (cmdRes *CommandsRes, err error) {
 		)
 	}
 	return t.sendCommand(cmdRemoteBoomBox, "")
+}
+
+func (t *TeslaApi) ReleaseNotes(staged bool) (noteRes *CommonRes, err error) {
+	cmdRes := &CommonRes{}
+	if t.activeVehicle.Id == 0 {
+		return cmdRes, ErrNoActiveVehicle
+	}
+	res, err := t.getVehicleCmd(cmdReleaseNotes, t.jsonEncode(map[string]string{
+		"staged": strconv.FormatBool(staged),
+	}))
+	if err != nil {
+		return cmdRes, err
+	}
+	c := CommonRes{}
+	err = parseResp(res, &c)
+	if err != nil {
+		return &c, errors.New(c.Err)
+	}
+	cmdRes = &c
+	return cmdRes, err
 }

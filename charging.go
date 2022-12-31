@@ -1,6 +1,7 @@
 package tesla
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -129,8 +130,7 @@ func (t *TeslaApi) NearByChargingSites() (cs []ChargeSite, err error) {
 	if t.activeVehicle.Id == 0 {
 		return cs, ErrNoActiveVehicle
 	}
-	u := joinPath(commandUrlBase, vehicleEndpoint, t.activeVehicle.GetIdStr(), "nearby_charging_sites")
-	res, err := t.apiRequest(http.MethodGet, u, nil)
+	res, err := t.getVehicleCmd("nearby_charging_sites", "")
 	if err != nil {
 		return cs, err
 	}
@@ -242,15 +242,18 @@ func (t *TeslaApi) IsFastCharging() bool {
 }
 
 type SuperChargingHistory struct {
-	Vin                 string      `json:"vin"`
+	BillingType         string      `json:"billingType"`
+	CabinetId           string      `json:"cabinetId"`
 	ChargeSessionId     string      `json:"chargeSessionId"`
-	SiteLocationName    string      `json:"siteLocationName"`
 	ChargeStartDateTime time.Time   `json:"chargeStartDateTime"`
 	ChargeStopDateTime  time.Time   `json:"chargeStopDateTime"`
-	UnlatchDateTime     time.Time   `json:"unlatchDateTime"`
+	ChargingPackage     interface{} `json:"chargingPackage"`
+	ChargingSiteType    string      `json:"chargingSiteType"`
 	CountryCode         string      `json:"countryCode"`
 	Credit              interface{} `json:"credit"`
+	Din                 string      `json:"din"`
 	DisputeDetails      interface{} `json:"disputeDetails"`
+	FapiaoDetails       interface{} `json:"fapiaoDetails"`
 	Fees                []struct {
 		SessionFeeId  int     `json:"sessionFeeId"`
 		FeeType       string  `json:"feeType"`
@@ -278,17 +281,28 @@ type SuperChargingHistory struct {
 		Status        string  `json:"status"`
 		ProcessFlagId int     `json:"processFlagId"`
 	} `json:"fees"`
-	BillingType string `json:"billingType"`
-	Invoices    []struct {
+	Invoices []struct {
 		FileName    string `json:"fileName"`
 		ContentId   string `json:"contentId"`
 		InvoiceType string `json:"invoiceType"`
 		BeInvoiceId string `json:"beInvoiceId"`
 		ProcessFlag int    `json:"processFlag"`
 	} `json:"invoices"`
-	FapiaoDetails   interface{} `json:"fapiaoDetails"`
-	ProgramType     string      `json:"programType"`
-	VehicleMakeType string      `json:"vehicleMakeType"`
+	IsDcEnforced     bool      `json:"isDcEnforced"`
+	PostId           string    `json:"postId"`
+	ProgramType      string    `json:"programType"`
+	SessionId        int       `json:"sessionId"`
+	SiteLocationName string    `json:"siteLocationName"`
+	SurveyCompleted  bool      `json:"surveyCompleted"`
+	SurveyType       string    `json:"surveyType"`
+	UnlatchDateTime  time.Time `json:"unlatchDateTime"`
+	VehicleMakeType  string    `json:"vehicleMakeType"`
+	Vin              string    `json:"vin"`
+}
+
+// SetTeslaWebRefreshToken web refresh token from tesla.com teslaSSORefreshToken cookie
+func (t *TeslaApi) SetTeslaWebRefreshToken(webRefreshToken string) {
+	t.webRefreshToken = webRefreshToken
 }
 
 // GetSuperChargingHistory only works when logging in via username and password
@@ -299,12 +313,17 @@ func (t *TeslaApi) GetSuperChargingHistory() (ch []SuperChargingHistory, err err
 	if err != nil {
 		return ch, err
 	}
+	chargeRecord := SuperChargingHistory{}
 	for _, v := range res.Data.([]interface{}) {
-		h, ok := v.(SuperChargingHistory)
-		if !ok {
+		b, err := json.Marshal(v)
+		if err != nil {
 			continue
 		}
-		ch = append(ch, h)
+		err = json.Unmarshal(b, &chargeRecord)
+		if err != nil {
+			continue
+		}
+		ch = append(ch, chargeRecord)
 	}
 	return ch, err
 }
@@ -381,8 +400,7 @@ func (t *TeslaApi) GetChargeHistory() (ch *ChargeHistory, err error) {
 	if t.activeVehicle.Id == 0 {
 		return ch, ErrNoActiveVehicle
 	}
-	u := joinPath(commandUrlBase, vehicleEndpoint, t.activeVehicle.GetIdStr(), "charge_history")
-	res, err := t.apiRequest(http.MethodGet, u, nil)
+	res, err := t.getVehicleCmd("charge_history", "")
 	if err != nil {
 		return ch, err
 	}

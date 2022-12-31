@@ -105,11 +105,12 @@ func (t *TeslaApi) getAuthCode() (authCode string) {
 	req.URL.RawQuery = q.Encode()
 
 	// open tesla log in page in browser
-	l, _ := launcher.New().Headless(false).Launch()
+	l, _ := launcher.New().Leakless(false).Headless(false).Launch()
 	browser := rod.New()
 	if browser != nil {
 		defer browser.Close()
 	}
+	defer browser.MustClose()
 	page := browser.
 		ControlURL(l).
 		SlowMotion(1 * time.Second).
@@ -270,6 +271,10 @@ func (t *TeslaApi) setCookies(cks []*http.Cookie) {
 }
 
 func (t *TeslaApi) setAuthCookies() {
+	webToken := t.webRefreshToken
+	if t.webRefreshToken == "" {
+		webToken = t.refreshToken
+	}
 	authCook := []*http.Cookie{
 		{
 			Name:    webAuthCookieField,
@@ -280,7 +285,7 @@ func (t *TeslaApi) setAuthCookies() {
 		},
 		{
 			Name:    webRefreshCookieField,
-			Value:   t.refreshToken,
+			Value:   webToken,
 			Domain:  "www.tesla.com",
 			Path:    "/",
 			Expires: refreshTokenExpire,

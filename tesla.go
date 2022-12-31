@@ -3,9 +3,10 @@ package tesla
 import (
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/http/cookiejar"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -21,6 +22,7 @@ type TeslaApi struct {
 	accessToken       string
 	refreshToken      string
 	renewingToken     bool
+	webRefreshToken   string
 }
 
 // Login Log in with username & password will require browser pop up, for No GUI environment use refresh token
@@ -43,6 +45,19 @@ func (t *TeslaApi) SetActiveVehicle(vehicle Vehicle) (err error) {
 	}
 	t.activeVehicleData = *data
 	return nil
+}
+
+func (t *TeslaApi) SetActiveVehicleByName(vehicleName string) (err error) {
+	vs, err := t.ListVehicles()
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to get vehicle list: %s", err))
+	}
+	for _, v := range vs {
+		if v.DisplayName == vehicleName {
+			return t.SetActiveVehicle(v)
+		}
+	}
+	return errors.New(fmt.Sprintf("vehicle name %s not found", vehicleName))
 }
 
 // NewTeslaApi when using username and password will log in via browser
