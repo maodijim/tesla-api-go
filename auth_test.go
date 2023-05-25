@@ -122,3 +122,34 @@ func TestTeslaApi_setCookies(t1 *testing.T) {
 		})
 	}
 }
+
+func TestTeslaApi_getChallenge(t1 *testing.T) {
+	type fields struct {
+		AuthReq AuthReq
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "test generate challenge",
+			fields: fields{
+				AuthReq: AuthReq{
+					CodeVerifier: "ZybDfrrlGNkdCylkXUadBkkqHBCRJdLFqdUFWAWPcjxkwmEseTYxzPqKWffmPozGmzFFbzkEKzFnlviyLtRcoN",
+				},
+			},
+			want: "VPmSoGNUaGPAGQSwTVnyMA6vebYvX15K-tFDKq0B_rU",
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &TeslaApi{
+				AuthReq: tt.fields.AuthReq,
+			}
+			if got := t.getChallenge(); got != tt.want {
+				t1.Errorf("getChallenge() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
