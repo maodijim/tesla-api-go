@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	letters         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	letters         = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	commandUrlBase  = "https://owner-api.teslamotors.com"
 	teslaUrlBase    = "https://www.tesla.com"
 	accountEndpoint = "teslaaccount"
@@ -145,7 +145,6 @@ func (t *TeslaApi) apiRequest(method, url string, body io.Reader) (res *http.Res
 		} else {
 			req.Header.Add("Content-Type", "application/json")
 		}
-		req.Header.Add("Content-Type", "application/json")
 	}
 	if t.accessToken != "" {
 		expired := isTokenExpired(t.accessToken)

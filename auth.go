@@ -1,6 +1,7 @@
 package tesla
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -83,7 +84,15 @@ func (t *TeslaApi) getVerifier(customVerifier string) string {
 }
 
 func (t *TeslaApi) getChallenge() string {
-	return base64.StdEncoding.EncodeToString([]byte(t.CodeVerifier))
+	h := sha256.New()
+	h.Write([]byte(t.CodeVerifier))
+	log.Infof("sha256 code verifier: %x", h.Sum(nil))
+	b64 := base64.StdEncoding.EncodeToString(h.Sum(nil))
+	b64 = strings.Replace(b64, "=", "", -1)
+	b64 = strings.Replace(b64, "+", "-", -1)
+	b64 = strings.Replace(b64, "/", "_", -1)
+	b64 = strings.Trim(b64, " ")
+	return b64
 }
 
 // Step 1: Obtain the login page
@@ -173,6 +182,13 @@ func (t *TeslaApi) getToken(authCode string) (err error) {
 	if authCode == "" {
 		return errors.New("auth code is empty")
 	}
+	// jsonBody, _ := json.Marshal(map[string]string{
+	// 	grantTypeField:    grantTypeAuthCode,
+	// 	clientIdField:     ownerClientId,
+	// 	codeField:         authCode,
+	// 	codeVerifierField: t.CodeVerifier,
+	// 	redirectUriField:  redirectUri,
+	// })
 	res, err := t.apiRequest(
 		http.MethodPost,
 		tokenUrl,
